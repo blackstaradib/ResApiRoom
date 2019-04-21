@@ -20,9 +20,8 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     Context context;
     private List<CategoryEntity> categories;
 
-    public CategoriesListAdapter(List<CategoryEntity> categoryEntities,Context context) {
+    public CategoriesListAdapter(Context context) {
         this.context=context;
-        this.categories=categoryEntities;
 
     }
 
@@ -35,15 +34,21 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder categoryHolder, int pos) {
-        CategoryEntity CurrentCategory = categories.get(pos);
-        ((CategoryHolder)categoryHolder).id.setText(String.valueOf(CurrentCategory.getId()));
-        ((CategoryHolder)categoryHolder).Type.setText(CurrentCategory.getType());
-        ((CategoryHolder)categoryHolder).Desc.setText(CurrentCategory.getDescreption());
+        if (categories!=null) {
+            CategoryEntity CurrentCategory = categories.get(pos);
+            ((CategoryHolder) categoryHolder).id.setText(String.valueOf(CurrentCategory.getId()));
+            ((CategoryHolder) categoryHolder).Type.setText(CurrentCategory.getType());
+            ((CategoryHolder) categoryHolder).Desc.setText(CurrentCategory.getDescreption());
+        }
     }
 
     @Override
     public int getItemCount() {
+        if (categories!=null)
         return categories.size();
+        else {
+            return 0;
+        }
     }
 
     @Override
@@ -58,6 +63,7 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setCategory(List<CategoryEntity> categories) {
         this.categories=categories;
+        notifyDataSetChanged();
     }
 
 

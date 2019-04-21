@@ -30,21 +30,23 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 
-public class WebCategoryRepository {
+public class WebCategoryRepository{
     private final String JSON_URL = "https://jsonplaceholder.typicode.com/posts/1/comments";
     private JsonArrayRequest request;
     private RequestQueue requestQueue;
     private Application application;
-    private CategoryViewModel model;
+    private CategoryViewModel vModel;
 //    private AppDatabase db;
 
     List<CategoryEntity> webserviceResponseList = new ArrayList<>();
+    private int index;
 
-    public WebCategoryRepository(Application application, CategoryViewModel model) {
+    public WebCategoryRepository(Application application,CategoryViewModel model) {
         this.application = application;
         catRepo = new CategoryRepository(application);
 //        db= AppDatabase.getInstance(context);
-        this.model =model;
+        this.vModel =model;
+//        loadWebApiCategories();
     }
 
 
@@ -83,33 +85,42 @@ public class WebCategoryRepository {
     private CategoryRepository catRepo;
 
 
-    public LiveData<List<CategoryEntity>> providesWebCategory() {
+
+    public void  providesWebService(){
 
         final MutableLiveData<List<CategoryEntity>> data = new MutableLiveData<>();
-        model.allCategories = data;
+        vModel.setCategoryRepository(catRepo.getAllCategory());
+        vModel.setCategoryRepository(data);
+
         try {
             request = new JsonArrayRequest(JSON_URL, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
                     JSONObject jsonObject  = null ;
                     Log.e("dffddfgdfg","ffddsfdsfs");
+//                    CategoryRepository catRepo=new CategoryRepository(application);
                     for (int i = 0 ; i < response.length(); i++ ) {
                         try {
                             jsonObject = response.getJSONObject(i) ;
 
-                            int id=jsonObject.getInt("postId");
+                            int id=jsonObject.getInt("id");
                             String type=jsonObject.getString("name");
                             String descreption=jsonObject.getString("body");
 
                             webserviceResponseList.add(new CategoryEntity(id,type,descreption));
-                            catRepo.insertCategories(webserviceResponseList);
-                            data.postValue(webserviceResponseList);
+
+//                            index=webserviceResponseList.indexOf(catRepo);
+//                            postValue(webserviceResponseList);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                     // setuprecyclerview(lstCategories);
+
+                    catRepo.insertCategories(webserviceResponseList);
+                    data.postValue(webserviceResponseList);
+                    vModel.setCategoryRepository(data);
                 }
             }, new MyErrorListener(application.getApplicationContext()));
             requestQueue = Volley.newRequestQueue(application.getApplicationContext());
@@ -117,9 +128,18 @@ public class WebCategoryRepository {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return data;
+
+
 
     }
+
+//    public List<CategoryEntity> getListCategories(){
+//        return getValue();
+//    }
+
+//    public int getChangeIndex(){
+//        return index;
+//    }
 
 
 

@@ -8,8 +8,6 @@ import com.example.sql_giude_test.db.AppDatabase;
 import com.example.sql_giude_test.db.dao.CategoryDao;
 import com.example.sql_giude_test.db.entity.CategoryEntity;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +21,7 @@ public class CategoryRepository {
         AppDatabase db= AppDatabase.getInstance(application);
         categoryDao=db.categoryDao();
         allCategory=categoryDao.loadAllCategory();
+//        List<CategoryEntity> categoryEntities=allCategory.getValue();
     }
 
 
